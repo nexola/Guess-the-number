@@ -6,9 +6,13 @@ let pontuacaoMaxima = 0;
 
 let pontuacao = 20;
 
-const resultado = document.querySelector('.message');
+const mostrarMensagem = function (mensagem) {
+  document.querySelector('.message').textContent = mensagem;
+};
 
-const pontuacaoHtml = document.querySelector('.score span');
+const mensagemPontuacao = function (mensagem) {
+  document.querySelector('.score span').textContent = mensagem;
+};
 
 const chute = document.querySelector('.guess');
 
@@ -17,7 +21,7 @@ const numero = document.querySelector('.number');
 function jogar() {
   // Se o jogador vencer
   if (chute.value == numeroAleatorio) {
-    resultado.textContent = '🎉 Acertou!';
+    mostrarMensagem('🎉 Acertou!');
     numero.textContent = numeroAleatorio;
     document.querySelector('body').style.backgroundColor = '#60b347';
     document.querySelector('.number').style.width = '30rem';
@@ -25,38 +29,27 @@ function jogar() {
       document.querySelector('.highscore').textContent = pontuacao;
       pontuacaoMaxima = pontuacao;
     }
+    document.querySelector('.check').style.display = 'none';
+    chute.style.display = 'none';
 
-    // Se o chute for menos que o número aleatório
-  } else if (chute.value < numeroAleatorio && chute.value) {
+    // Se o chute for errado
+  } else if (chute.value !== numeroAleatorio) {
     if (pontuacao > 1) {
-      resultado.textContent = '📈 Mais!';
+      mostrarMensagem(chute.value < numeroAleatorio ? '📈 Mais!' : '📉 Menos!');
       pontuacao--;
-      pontuacaoHtml.textContent = pontuacao;
+      mensagemPontuacao(pontuacao);
     } else {
-      resultado.textContent = '💥 Você perdeu o jogo!';
-      pontuacaoHtml.textContent = 0;
+      mostrarMensagem('💥 Você perdeu o jogo!');
+      mensagemPontuacao(0);
       numero.textContent = numeroAleatorio;
       document.querySelector('.number').style.width = '30rem';
       document.querySelector('body').style.backgroundColor = '#913436';
+      document.querySelector('.check').style.display = 'none';
+      chute.style.display = 'none';
     }
-
-    // Se o chute for maior que o número aleatório
-  } else if (chute.value > numeroAleatorio) {
-    if (pontuacao > 1) {
-      resultado.textContent = '📉 Menos!';
-      pontuacao--;
-      pontuacaoHtml.textContent = pontuacao;
-    } else {
-      resultado.textContent = '💥 Você perdeu o jogo!';
-      pontuacaoHtml.textContent = 0;
-      numero.textContent = numeroAleatorio;
-      document.querySelector('.number').style.width = '30rem';
-      document.querySelector('body').style.backgroundColor = '#913436';
-    }
-
     // Se não houver valor no input
   } else if (!chute.value) {
-    resultado.textContent = '⛔ Insira um número!';
+    mostrarMensagem('⛔ Insira um número!');
   }
 }
 
@@ -67,8 +60,10 @@ function resetar() {
   document.querySelector('body').style.backgroundColor = '#222';
   numero.textContent = '?';
   chute.value = null;
-  resultado.textContent = 'Comece a adivinhar...';
-  pontuacaoHtml.textContent = pontuacao;
+  mostrarMensagem('Comece a adivinhar...');
+  mensagemPontuacao(pontuacao);
+  document.querySelector('.check').style.display = 'block';
+  chute.style.display = 'block';
 }
 
 document.querySelector('.check').addEventListener('click', jogar);
